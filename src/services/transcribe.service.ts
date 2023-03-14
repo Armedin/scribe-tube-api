@@ -1,29 +1,39 @@
 import axios from 'axios';
+import VideoFetcher from '../modules/youtube-transcribe/VideoFetcher';
 import { HttpException } from '../exceptions/HttpException';
 import TranscriptList from '../modules/youtube-transcribe/TranscriptList';
 
 class TranscribeService {
   private transcriptList;
+  private videoFetcher;
 
   constructor() {
     this.transcriptList = new TranscriptList(axios.create());
+    this.videoFetcher = new VideoFetcher(axios.create());
   }
 
-  public getTranscript = async (
+  public getTranscriptWithDetails = async (
     videoId: string,
     languages: string[] = ['en']
   ) => {
-    const transciptList = await this.transcriptList.fetch(videoId);
-    const transcript = await transciptList.findTranscript(['en']);
+    const video = await this.videoFetcher.fetch(videoId);
+    const foundTranscript = await video
+      .getTranscriptList()
+      .findTranscript(['en']);
 
-    if (!transcript) {
+    if (!foundTranscript) {
       throw new HttpException(
         500,
         'The requested language is not translatable'
       );
     }
 
-    return await transcript.fetch();
+    const transcript = await foundTranscript.fetch();
+
+    return {
+      videoDetails: video.getVideoDetails(),
+      subs: transcript,
+    };
   };
 
   // Get available transcripts for a video

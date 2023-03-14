@@ -2,6 +2,7 @@ import express from 'express';
 import { config } from 'dotenv';
 import errorHandler from 'errorhandler';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import TranscibeRoute from './routes/transcribe.route';
 import { Routes } from './interfaces/routes.interface';
@@ -13,12 +14,14 @@ const app = express();
 const port = process.env.PORT;
 const routes: Routes[] = [new TranscibeRoute()];
 
-routes.forEach(route => app.use('/', route.router));
+app.use(cors({ origin: '*', credentials: false }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(errorMiddleware);
+
+routes.forEach(route => app.use('/', route.router));
 
 /**
  * Error Handler. Provides full stack

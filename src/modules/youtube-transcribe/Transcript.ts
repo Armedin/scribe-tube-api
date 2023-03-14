@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 import { HttpException } from '../../exceptions/HttpException';
 import { Language } from './language.interface';
 import { getWatchURL } from './settings';
+import TranscriptParser from './TranscriptParser';
 
 class Transcript {
   private axiosInstance;
@@ -29,7 +30,7 @@ class Transcript {
 
   public fetch = async () => {
     const response = await this.axiosInstance.get(this.url);
-    return response.data;
+    return TranscriptParser.parse(response.data);
   };
 }
 

@@ -10,8 +10,8 @@ class TranscribeController {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const transcript = await this.transcribeService.getTranscript(
-        '1lOd7rDFYbc'
+      const transcript = await this.transcribeService.getTranscriptWithDetails(
+        req.body.id
       );
       res.status(200).json(transcript);
     } catch (error) {

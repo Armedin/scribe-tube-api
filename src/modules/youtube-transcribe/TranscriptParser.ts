@@ -1,7 +1,19 @@
+import et from 'elementtree';
+
 class TranscriptParser {
-  private HTML_TAG_REGEX = new RegExp('<[^>]*>', 'i');
-  public parse = (data: string) => {
-    return;
+  static parse = (data: string) => {
+    const xmlElements = et.parse(data).getroot().getchildren();
+    const output: any[] = [];
+
+    xmlElements.map(element => {
+      output.push({
+        text: element.text,
+        start: element.attrib.start,
+        duration: element.attrib.dur,
+      });
+    });
+
+    return output;
   };
 }
 

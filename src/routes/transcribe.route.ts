@@ -8,7 +8,7 @@ class TranscibeRoute implements Routes {
   public transcibeController = new TranscribeController();
 
   constructor() {
-    this.router.get(`${this.path}/`, this.transcibeController.getTranscript);
+    this.router.post(`${this.path}/`, this.transcibeController.getTranscript);
   }
 }
 
