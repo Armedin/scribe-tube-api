@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 import { getWatchURL } from './settings';
 import TranscriptList from './TranscriptList';
 import { HttpException } from '../../exceptions/HttpException';
+import { findAndParseJSON } from './utils';
 
 class VideoFetcher {
   private axiosInstance;
@@ -28,9 +29,11 @@ class VideoFetcher {
 
   private build = (videoId: string, html: string) => {
     const splittedHTML = html.split('"videoDetails":');
-    // TODO - check for length
-    const videoDetails = JSON.parse(
-      splittedHTML[1].split(',"playerConfig"')[0]
+
+    const playerResponseJSON = findAndParseJSON(
+      html,
+      /\bytInitialPlayerResponse\s*=\s*\{/i,
+      ';</script>'
     );
 
     return new VideoFetcher(
@@ -40,7 +43,7 @@ class VideoFetcher {
         videoId,
         this.extractCaptionsFromHTML(html)
       ),
-      videoDetails
+      playerResponseJSON['videoDetails']
     );
   };
 
