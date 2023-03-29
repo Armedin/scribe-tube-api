@@ -9,6 +9,11 @@ class TranscibeRoute implements Routes {
 
   constructor() {
     this.router.post(`${this.path}/`, this.transcibeController.getTranscript);
+
+    this.router.post(
+      `${this.path}/change-language`,
+      this.transcibeController.switchLanguage
+    );
   }
 }
 

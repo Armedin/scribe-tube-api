@@ -46,7 +46,6 @@ class TranscriptList {
 
     captions['captionTracks'].map((caption: any) => {
       const languageCode = caption['languageCode'];
-
       const transcript = new Transcript(
         this.axiosInstance,
         videoId,
@@ -55,8 +54,7 @@ class TranscriptList {
           language: caption['name']['simpleText'],
           code: languageCode,
         },
-        caption.kind && caption.kind === 'asr',
-        translationLanguages
+        caption.kind && caption.kind === 'asr'
       );
 
       if (caption.kind && caption.kind === 'asr') {
@@ -75,12 +73,13 @@ class TranscriptList {
     );
   };
 
+  // Find a transcript given the language code (desc order of priority)
   public findTranscript = (
     languageCodes: string[]
   ): Promise<Transcript | null> => {
     const allTranscriptList = [
       this.manualTranscripts,
-      this.generatedTranscripts,
+      // this.generatedTranscripts, // for now using only manual
     ];
 
     let foundTranscript = null;
@@ -98,7 +97,24 @@ class TranscriptList {
       }
     }
 
+    // Find the first available language
+    if (!foundTranscript) {
+      allTranscriptList.some(transcriptList => {
+        if (Object.keys(transcriptList).length > 0) {
+          foundTranscript = transcriptList[Object.keys(transcriptList)[0]];
+          return true;
+        }
+      });
+    }
+
     return foundTranscript;
+  };
+
+  public getAvailableLanguagesAsObj = () => {
+    return {
+      manualTranscript: this.manualTranscripts,
+      generatedTranscripts: this.generatedTranscripts,
+    };
   };
 
   private extractCaptionsFromHTML = (html: string) => {

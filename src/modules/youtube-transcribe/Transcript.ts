@@ -10,27 +10,28 @@ class Transcript {
   private url;
   private language;
   private isGenerated;
-  private translationLanguages;
 
   constructor(
     axiosInstance: AxiosInstance,
     videoId: string,
     url: string,
     language: Language,
-    isGenerated: boolean,
-    translationLanguages: Language[]
+    isGenerated: boolean
   ) {
     this.axiosInstance = axiosInstance;
     this.videoId = videoId;
     this.url = url;
     this.language = language;
     this.isGenerated = isGenerated;
-    this.translationLanguages = translationLanguages;
   }
 
   public fetch = async () => {
     const response = await this.axiosInstance.get(this.url);
     return TranscriptParser.parse(response.data);
+  };
+
+  public getLanguage = () => {
+    return this.language;
   };
 }
 
