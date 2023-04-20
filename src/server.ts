@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import errorHandler from 'errorhandler';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import serverless from 'serverless-http';
 
 import TranscibeRoute from './routes/transcribe.route';
 import { Routes } from './interfaces/routes.interface';
@@ -31,9 +32,11 @@ routes.forEach(route => app.use('/', route.router));
 // }
 
 app.get('/', (req, res) => {
-  res.send('Express + TypeScript Server');
+  res.send('ok');
 });
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
+
+exports.handler = serverless(app);
