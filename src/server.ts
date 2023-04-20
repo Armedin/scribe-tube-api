@@ -13,7 +13,6 @@ config();
 
 const app = express();
 const port = process.env.PORT;
-const router = express.Router();
 const routes: Routes[] = [new TranscibeRoute()];
 
 app.use(cors({ origin: '*', credentials: false }));
@@ -23,9 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(errorMiddleware);
 
-routes.forEach(route => app.use('/', route.router));
-
-router.use('/', router);
+if (process.env.NODE_ENV === 'development') {
+  routes.forEach(route => app.use('/', route.router));
+} else {
+  routes.forEach(route => app.use('/.netlify/functions/server', route.router));
+}
 
 /**
  * Error Handler. Provides full stack
@@ -38,8 +39,10 @@ router.use('/', router);
 //   res.send('ok');
 // });
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
-});
+if (process.env.NODE_ENV === 'development') {
+  app.listen(port, () => {
+    console.log(`[server]: Server is running at http://localhost:${port}`);
+  });
+}
 
 exports.handler = serverless(app);

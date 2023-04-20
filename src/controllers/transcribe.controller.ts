@@ -5,6 +5,10 @@ import TranscribeService from '../services/transcribe.service';
 class TranscribeController {
   private transcribeService = new TranscribeService();
 
+  public getInfo = async (req: Request, res: Response, next: NextFunction) => {
+    res.status(200).json({ status: 'ok' });
+  };
+
   public getTranscript = async (
     req: Request,
     res: Response,

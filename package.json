@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "start:dev": "NODE_ENV=development concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "build-ts": "tsc",
     "build": "npm run build-ts"
   },
