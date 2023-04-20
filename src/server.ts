@@ -13,6 +13,7 @@ config();
 
 const app = express();
 const port = process.env.PORT;
+const router = express.Router();
 const routes: Routes[] = [new TranscibeRoute()];
 
 app.use(cors({ origin: '*', credentials: false }));
@@ -24,6 +25,8 @@ app.use(errorMiddleware);
 
 routes.forEach(route => app.use('/', route.router));
 
+router.use('/', router);
+
 /**
  * Error Handler. Provides full stack
  */
@@ -31,9 +34,9 @@ routes.forEach(route => app.use('/', route.router));
 //   app.use(errorHandler());
 // }
 
-app.get('/', (req, res) => {
-  res.send('ok');
-});
+// app.get('/', (req, res) => {
+//   res.send('ok');
+// });
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
